@@ -21,9 +21,15 @@ def createTodo(request):
     # return HttpResponse("Created! Todo! => " + user_input_str)
 
 
-def deleteTodo(request):
+def activeTodo(request):
     done_todo_id = request.GET['todoNum']
     todo = Todo.objects.get(id=done_todo_id)
-    todo.delete()
-    #print(f"완료한 todo의 id: {done_todo_id}")
+    if request.method == 'GET' and 'success' in request.GET:
+        todo.isDone = True
+        todo.save()
+    elif request.method == 'GET' and 'delete' in request.GET:
+        todo.delete()
+    elif request.method == 'GET' and 'reset' in request.GET:
+        todo.isDone = False
+        todo.save()
     return HttpResponseRedirect(reverse('index'))
